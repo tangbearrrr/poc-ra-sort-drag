@@ -4,32 +4,29 @@ import {
     Children,
     cloneElement,
     useCallback,
-    FC,
-    ReactElement,
 } from 'react';
 import PropTypes from 'prop-types';
 import {
     sanitizeListRestProps,
     useListContext,
     useVersion,
-    Identifier,
-    Record,
 } from 'ra-core';
 import {
     Checkbox,
     Table,
-    TableProps,
     TableCell,
     TableHead,
     TableRow,
 } from '@material-ui/core';
 import classnames from 'classnames';
 
-import DatagridHeaderCell from './DatagridHeaderCell';
-import DatagridLoading from './DatagridLoading';
-import DatagridBody, { PureDatagridBody } from './DatagridBody';
-import useDatagridStyles from './useDatagridStyles';
-import { ClassesOverride } from '../../types';
+import { 
+    DatagridHeaderCell,
+    DatagridLoading,
+    DatagridBody,
+    PureDatagridBody,
+    useDatagridStyles
+} from 'react-admin';
 
 /**
  * The Datagrid component renders a list of records as a table.
@@ -63,7 +60,7 @@ import { ClassesOverride } from '../../types';
  *     </Datagrid>
  * </ReferenceManyField>
  */
-const Datagrid: FC<DatagridProps> = React.forwardRef((props, ref) => {
+const CustomDatagrid = React.forwardRef((props, ref) => {
     const classes = useDatagridStyles(props);
     const {
         optimized = false,
@@ -211,10 +208,10 @@ const Datagrid: FC<DatagridProps> = React.forwardRef((props, ref) => {
                                 field={field}
                                 isSorting={
                                     currentSort.field ===
-                                    ((field.props as any).sortBy ||
-                                        (field.props as any).source)
+                                    (field.props.sortBy ||
+                                        field.props.source)
                                 }
-                                key={(field.props as any).source || index}
+                                key={field.props.source || index}
                                 resource={resource}
                                 updateSort={updateSort}
                             />
@@ -247,7 +244,7 @@ const Datagrid: FC<DatagridProps> = React.forwardRef((props, ref) => {
     );
 });
 
-Datagrid.propTypes = {
+CustomDatagrid.propTypes = {
     basePath: PropTypes.string,
     body: PropTypes.element,
     children: PropTypes.node.isRequired,
@@ -276,31 +273,4 @@ Datagrid.propTypes = {
     isRowSelectable: PropTypes.func,
 };
 
-type RowClickFunction = (
-    id: Identifier,
-    basePath: string,
-    record: Record
-) => string;
-
-export interface DatagridProps extends Omit<TableProps, 'size' | 'classes'> {
-    body?: ReactElement;
-    classes?: ClassesOverride<typeof useDatagridStyles>;
-    className?: string;
-    expand?:
-        | ReactElement
-        | FC<{
-              basePath: string;
-              id: Identifier;
-              record: Record;
-              resource: string;
-          }>;
-    hasBulkActions?: boolean;
-    hover?: boolean;
-    isRowSelectable?: (record: Record) => boolean;
-    optimized?: boolean;
-    rowClick?: string | RowClickFunction;
-    rowStyle?: (record: Record, index: number) => any;
-    size?: 'medium' | 'small';
-}
-
-export default Datagrid;
+export default CustomDatagrid;

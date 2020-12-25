@@ -1,12 +1,13 @@
 import React from 'react';
-import { List, TextField, Datagrid } from 'react-admin';
+import { List, TextField } from 'react-admin';
+import CustomDatagrid from '../components/CustomDatagrid';
 
 const CustomList = props => {
     return (
         <List {...props} exporter={false} bulkActionButtons={false}>
-            <Datagrid rowClick="edit">
+            <CustomDatagrid rowClick="edit">
                 <TextField source="name" />
-            </Datagrid>
+            </CustomDatagrid>
         </List>
     );
 }
