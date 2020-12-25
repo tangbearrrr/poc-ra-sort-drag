@@ -33,7 +33,7 @@ const SortableListContainer = SortableContainer(({ ...props }) => (
 ));
 
 // const onSortEnd = ({ oldIndex, newIndex }) => {
-    
+
 // };
 
 class TestGrid extends React.Component {
@@ -60,13 +60,22 @@ class TestGrid extends React.Component {
 class LanguageList extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            item: props.data
+        };
     }
+
+    onSortEnd = ({ oldIndex, newIndex }) => {
+        this.setState(({ items }) => ({
+            items: arrayMove(items, oldIndex, newIndex),
+        }));
+    };
 
     render() {
         return (
-            <SortableListContainer 
-                {...this.props} 
-                // onSortEnd={onSortEnd}
+            <SortableListContainer
+                {...this.props}
+                onSortEnd={this.onSortEnd}
                 useDragHandle={true}
                 lockAxis="y"
             />
