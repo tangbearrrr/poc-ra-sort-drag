@@ -27,6 +27,11 @@ import {
     PureDatagridBody,
     useDatagridStyles
 } from 'react-admin';
+import {
+    SortableContainer,
+    SortableElement,
+    sortableHandle,
+} from 'react-sortable-hoc';
 
 /**
  * The Datagrid component renders a list of records as a table.
@@ -60,11 +65,121 @@ import {
  *     </Datagrid>
  * </ReferenceManyField>
  */
-const CustomDatagrid = React.forwardRef((props, ref) => {
-    const classes = useDatagridStyles(props);
+
+const SortableTable = SortableContainer(props => {
     const {
         optimized = false,
         body = optimized ? <PureDatagridBody /> : <DatagridBody />,
+        children,
+        classes: classesOverride,
+        className,
+        expand,
+        hasBulkActions = false,
+        hover,
+        isRowSelectable,
+        resource,
+        rowClick,
+        rowStyle,
+        size = 'small',
+        classes,
+        basePath,
+        currentSort,
+        data,
+        ids,
+        onToggleItem,
+        selectedIds,
+        version,
+        updateSort,
+        handleSelectAll,
+        ref,
+        all,
+        ...rest
+    } = props;
+
+    return (
+        <Table
+            ref={ref}
+            className={classnames(classes.table, className)}
+            size={size}
+            {...sanitizeListRestProps(rest)}
+        >
+            <TableHead className={classes.thead}>
+                <TableRow
+                    className={classnames(classes.row, classes.headerRow)}
+                >
+                    {expand && (
+                        <TableCell
+                            padding="none"
+                            className={classnames(
+                                classes.headerCell,
+                                classes.expandHeader
+                            )}
+                        />
+                    )}
+                    {hasBulkActions && (
+                        <TableCell
+                            padding="checkbox"
+                            className={classes.headerCell}
+                        >
+                            <Checkbox
+                                className="select-all"
+                                color="primary"
+                                checked={
+                                    selectedIds.length > 0 &&
+                                    all.length > 0 &&
+                                    all.every(id => selectedIds.includes(id))
+                                }
+                                onChange={handleSelectAll}
+                            />
+                        </TableCell>
+                    )}
+                    {Children.map(children, (field, index) =>
+                        isValidElement(field) ? (
+                            <DatagridHeaderCell
+                                className={classes.headerCell}
+                                currentSort={currentSort}
+                                field={field}
+                                isSorting={
+                                    currentSort.field ===
+                                    (field.props.sortBy ||
+                                        field.props.source)
+                                }
+                                key={field.props.source || index}
+                                resource={resource}
+                                updateSort={updateSort}
+                            />
+                        ) : null
+                    )}
+                </TableRow>
+            </TableHead>
+            {cloneElement(
+                body,
+                {
+                    basePath,
+                    className: classes.tbody,
+                    classes,
+                    expand,
+                    rowClick,
+                    data,
+                    hasBulkActions,
+                    hover,
+                    ids,
+                    onToggleItem,
+                    resource,
+                    rowStyle,
+                    selectedIds,
+                    isRowSelectable,
+                    version,
+                },
+                children
+            )}
+        </Table>
+    );
+});
+
+const CustomDatagrid = React.forwardRef((props, ref) => {
+    const classes = useDatagridStyles(props);
+    const {
         children,
         classes: classesOverride,
         className,
@@ -164,83 +279,22 @@ const CustomDatagrid = React.forwardRef((props, ref) => {
      * the datagrid displays the current data.
      */
     return (
-        <Table
+        <SortableTable
+            {...props}
+            classes={classes}
+            basePath={basePath}
+            currentSort={currentSort}
+            data={data}
+            ids={ids}
+            onToggleItem={onToggleItem}
+            selectedIds={selectedIds}
+            version={version}
+            updateSort={updateSort}
+            handleSelectAll={handleSelectAll}
             ref={ref}
-            className={classnames(classes.table, className)}
-            size={size}
-            {...sanitizeListRestProps(rest)}
-        >
-            <TableHead className={classes.thead}>
-                <TableRow
-                    className={classnames(classes.row, classes.headerRow)}
-                >
-                    {expand && (
-                        <TableCell
-                            padding="none"
-                            className={classnames(
-                                classes.headerCell,
-                                classes.expandHeader
-                            )}
-                        />
-                    )}
-                    {hasBulkActions && (
-                        <TableCell
-                            padding="checkbox"
-                            className={classes.headerCell}
-                        >
-                            <Checkbox
-                                className="select-all"
-                                color="primary"
-                                checked={
-                                    selectedIds.length > 0 &&
-                                    all.length > 0 &&
-                                    all.every(id => selectedIds.includes(id))
-                                }
-                                onChange={handleSelectAll}
-                            />
-                        </TableCell>
-                    )}
-                    {Children.map(children, (field, index) =>
-                        isValidElement(field) ? (
-                            <DatagridHeaderCell
-                                className={classes.headerCell}
-                                currentSort={currentSort}
-                                field={field}
-                                isSorting={
-                                    currentSort.field ===
-                                    (field.props.sortBy ||
-                                        field.props.source)
-                                }
-                                key={field.props.source || index}
-                                resource={resource}
-                                updateSort={updateSort}
-                            />
-                        ) : null
-                    )}
-                </TableRow>
-            </TableHead>
-            {cloneElement(
-                body,
-                {
-                    basePath,
-                    className: classes.tbody,
-                    classes,
-                    expand,
-                    rowClick,
-                    data,
-                    hasBulkActions,
-                    hover,
-                    ids,
-                    onToggleItem,
-                    resource,
-                    rowStyle,
-                    selectedIds,
-                    isRowSelectable,
-                    version,
-                },
-                children
-            )}
-        </Table>
+            all={all}
+            {...rest}
+        />
     );
 });
 
