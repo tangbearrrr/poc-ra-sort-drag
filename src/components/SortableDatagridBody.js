@@ -5,30 +5,33 @@ import { TableBody } from '@material-ui/core';
 import classnames from 'classnames';
 import { shallowEqual } from 'react-redux';
 import { DatagridRow, PureDatagridRow } from 'react-admin';
+import {
+    SortableContainer
+} from 'react-sortable-hoc';
 
-const SortableDatagridBody = React.forwardRef(
-    (
-        {
-            basePath,
-            children,
-            classes,
-            className,
-            data,
-            expand,
-            hasBulkActions,
-            hover,
-            ids,
-            onToggleItem,
-            resource,
-            row,
-            rowClick,
-            rowStyle,
-            selectedIds,
-            isRowSelectable,
-            ...rest
-        },
-        ref
-    ) => (
+const SortableTableBody = SortableContainer(props => {
+    const {
+        basePath,
+        children,
+        classes,
+        className,
+        data,
+        expand,
+        hasBulkActions,
+        hover,
+        ids,
+        onToggleItem,
+        resource,
+        row,
+        rowClick,
+        rowStyle,
+        selectedIds,
+        isRowSelectable,
+        ref,
+        ...rest
+    } = props;
+
+    return (
         <TableBody
             ref={ref}
             className={classnames('datagrid-body', className)}
@@ -63,6 +66,52 @@ const SortableDatagridBody = React.forwardRef(
                 )
             )}
         </TableBody>
+    );
+});
+
+const SortableDatagridBody = React.forwardRef(
+    (
+        {
+            basePath,
+            children,
+            classes,
+            className,
+            data,
+            expand,
+            hasBulkActions,
+            hover,
+            ids,
+            onToggleItem,
+            resource,
+            row,
+            rowClick,
+            rowStyle,
+            selectedIds,
+            isRowSelectable,
+            ...rest
+        },
+        ref
+    ) => (
+        <SortableTableBody
+            basePath={basePath}
+            children={children}
+            classes={classes}
+            className={className}
+            data={data}
+            expand={expand}
+            hasBulkActions={hasBulkActions}
+            hover={hover}
+            ids={ids}
+            onToggleItem={onToggleItem}
+            resource={resource}
+            row={row}
+            rowClick={rowClick}
+            rowStyle={rowStyle}
+            selectedIds={selectedIds}
+            isRowSelectable={isRowSelectable}
+            {...rest}
+            ref={ref}
+        />
     )
 );
 

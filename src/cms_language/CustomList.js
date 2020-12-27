@@ -1,6 +1,5 @@
 import React from 'react';
 import { List, TextField, Datagrid } from 'react-admin';
-import CustomDatagrid from '../components/CustomDatagrid';
 import SortableDatagridBody from '../components/SortableDatagridBody';
 
 const CustomList = props => {
