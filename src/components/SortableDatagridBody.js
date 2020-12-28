@@ -123,22 +123,7 @@ const SortableTableBody = SortableContainer(props => {
 const SortableDatagridBody = React.forwardRef(
     (
         {
-            basePath,
-            children,
-            classes,
-            className,
             data,
-            expand,
-            hasBulkActions,
-            hover,
-            ids,
-            onToggleItem,
-            resource,
-            row,
-            rowClick,
-            rowStyle,
-            selectedIds,
-            isRowSelectable,
             ...rest
         },
         ref
@@ -153,25 +138,10 @@ const SortableDatagridBody = React.forwardRef(
 
         return (
             <SortableTableBody
-                basePath={basePath}
-                children={children}
-                classes={classes}
-                className={className}
                 data={data}
-                expand={expand}
-                hasBulkActions={hasBulkActions}
-                hover={hover}
-                ids={ids}
-                onToggleItem={onToggleItem}
-                resource={resource}
-                row={row}
-                rowClick={rowClick}
-                rowStyle={rowStyle}
-                selectedIds={selectedIds}
-                isRowSelectable={isRowSelectable}
-                {...rest}
                 ref={ref}
                 onSortEnd={onSortEnd}
+                {...rest}
             />
         );
     }
