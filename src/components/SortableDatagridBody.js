@@ -142,28 +142,39 @@ const SortableDatagridBody = React.forwardRef(
             ...rest
         },
         ref
-    ) => (
-        <SortableTableBody
-            basePath={basePath}
-            children={children}
-            classes={classes}
-            className={className}
-            data={data}
-            expand={expand}
-            hasBulkActions={hasBulkActions}
-            hover={hover}
-            ids={ids}
-            onToggleItem={onToggleItem}
-            resource={resource}
-            row={row}
-            rowClick={rowClick}
-            rowStyle={rowStyle}
-            selectedIds={selectedIds}
-            isRowSelectable={isRowSelectable}
-            {...rest}
-            ref={ref}
-        />
-    )
+    ) => {
+
+        const onSortEnd = ({ oldIndex, newIndex }) => {
+            if (oldIndex !== newIndex) {
+                console.log(`Old:${oldIndex}, New:${newIndex}`);
+                console.log(data[1]);
+            }
+        };
+
+        return (
+            <SortableTableBody
+                basePath={basePath}
+                children={children}
+                classes={classes}
+                className={className}
+                data={data}
+                expand={expand}
+                hasBulkActions={hasBulkActions}
+                hover={hover}
+                ids={ids}
+                onToggleItem={onToggleItem}
+                resource={resource}
+                row={row}
+                rowClick={rowClick}
+                rowStyle={rowStyle}
+                selectedIds={selectedIds}
+                isRowSelectable={isRowSelectable}
+                {...rest}
+                ref={ref}
+                onSortEnd={onSortEnd}
+            />
+        );
+    }
 );
 
 SortableDatagridBody.propTypes = {
