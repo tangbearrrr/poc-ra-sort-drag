@@ -6,8 +6,62 @@ import classnames from 'classnames';
 import { shallowEqual } from 'react-redux';
 import { DatagridRow, PureDatagridRow } from 'react-admin';
 import {
-    SortableContainer
+    SortableContainer,
+    SortableElement,
 } from 'react-sortable-hoc';
+
+const SortableItem = SortableElement(props => {
+    const {
+        basePath,
+        children,
+        classes,
+        className,
+        data,
+        expand,
+        hasBulkActions,
+        hover,
+        ids,
+        onToggleItem,
+        resource,
+        row,
+        rowClick,
+        rowStyle,
+        selectedIds,
+        isRowSelectable,
+        ref,
+        id,
+        rowIndex
+    } = props;
+
+    return (
+        cloneElement(
+            row,
+            {
+                basePath,
+                classes,
+                className: classnames(classes.row, {
+                    [classes.rowEven]: rowIndex % 2 === 0,
+                    [classes.rowOdd]: rowIndex % 2 !== 0,
+                    [classes.clickableRow]: rowClick,
+                }),
+                expand,
+                hasBulkActions,
+                hover,
+                id,
+                key: id,
+                onToggleItem,
+                record: data[id],
+                resource,
+                rowClick,
+                selectable:
+                    !isRowSelectable || isRowSelectable(data[id]),
+                selected: selectedIds.includes(id),
+                style: rowStyle ? rowStyle(data[id], rowIndex) : null,
+            },
+            children
+        )
+    );
+})
 
 const SortableTableBody = SortableContainer(props => {
     const {
@@ -38,32 +92,29 @@ const SortableTableBody = SortableContainer(props => {
             {...rest}
         >
             {ids.map((id, rowIndex) =>
-                cloneElement(
-                    row,
-                    {
-                        basePath,
-                        classes,
-                        className: classnames(classes.row, {
-                            [classes.rowEven]: rowIndex % 2 === 0,
-                            [classes.rowOdd]: rowIndex % 2 !== 0,
-                            [classes.clickableRow]: rowClick,
-                        }),
-                        expand,
-                        hasBulkActions,
-                        hover,
-                        id,
-                        key: id,
-                        onToggleItem,
-                        record: data[id],
-                        resource,
-                        rowClick,
-                        selectable:
-                            !isRowSelectable || isRowSelectable(data[id]),
-                        selected: selectedIds.includes(id),
-                        style: rowStyle ? rowStyle(data[id], rowIndex) : null,
-                    },
-                    children
-                )
+                <SortableItem
+                    basePath={basePath}
+                    children={children}
+                    classes={classes}
+                    className={className}
+                    data={data}
+                    expand={expand}
+                    hasBulkActions={hasBulkActions}
+                    hover={hover}
+                    ids={ids}
+                    onToggleItem={onToggleItem}
+                    resource={resource}
+                    row={row}
+                    rowClick={rowClick}
+                    rowStyle={rowStyle}
+                    selectedIds={selectedIds}
+                    isRowSelectable={isRowSelectable}
+                    ref={ref}
+                    id={id}
+                    rowIndex={rowIndex}
+                    key={id}
+                    index={rowIndex}
+                />
             )}
         </TableBody>
     );
