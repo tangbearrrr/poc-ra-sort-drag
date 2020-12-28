@@ -135,6 +135,9 @@ const SortableDatagridBody = React.forwardRef(
             function swapData(data, srcId, destId) {
                 const srcItem = data[srcId];
                 const destItem = data[destId];
+                const tempId = srcItem.id;
+                srcItem.id = destItem.id;
+                destItem.id = tempId;
                 data[destId] = srcItem;
                 data[srcId] = destItem;
             }
