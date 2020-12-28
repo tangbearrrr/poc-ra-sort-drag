@@ -132,16 +132,30 @@ const SortableDatagridBody = React.forwardRef(
 
         const onSortEnd = ({ oldIndex, newIndex }) => {
             if (oldIndex !== newIndex) {
-                const oldId = oldIndex + 1;
-                const newId = newIndex +1;
-                console.log(`Old:${oldIndex}, New:${newIndex}`);
-                const srcItem = data[oldId];
-                const destItem = data[newId];
-                console.log(srcItem);
-                console.log(destItem);
-                data[newId] = srcItem;
-                data[oldId] = destItem;
-                setItems([]);
+                let oldId = oldIndex + 1;
+                let newId = newIndex +1;
+
+                if (oldId < newId) {
+                    while(oldId < newId) {
+                        const nextId = oldId + 1;
+                        const srcItem = data[oldId];
+                        const destItem = data[nextId];
+                        data[nextId] = srcItem;
+                        data[oldId] = destItem;
+                        setItems([]);
+                        oldId = nextId;
+                    }
+                } else {
+                    while(newId < oldId) {
+                        const nextId = oldId - 1;
+                        const srcItem = data[oldId];
+                        const destItem = data[nextId];
+                        data[nextId] = srcItem;
+                        data[oldId] = destItem;
+                        setItems([]);
+                        oldId = nextId;
+                    }
+                }
             }
         };
 
